@@ -36,12 +36,10 @@ const App = () => {
 
   return (
     <div>
-      <h1>Anecdotas</h1>
       <article>{anecdotes[selected]}</article>
       <article>Esta anecdota tiene {voto[selected]} votaciones</article>
       <Button func={votacion} texto={"Votar"} />
       <Button func={click} texto={"Siguiente anecdota"} />
-      <h1>Anecdotas con mayor votacion </h1>
     </div>
   );
 };
