@@ -1,6 +1,9 @@
 import { useState } from "react";
 
+
+
 const App = () => {
+  const valoracion = new Array(8).fill(0);
   const anecdotes = [
     "If it hurts, do it more often.",
     "Adding manpower to a late software project makes it later!",
