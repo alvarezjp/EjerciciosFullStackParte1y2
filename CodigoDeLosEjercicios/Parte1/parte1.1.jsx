@@ -48,3 +48,4 @@ const Total = ({ valor1, valor2, valor3 }) => {
   );
 };
 export default App;
+
