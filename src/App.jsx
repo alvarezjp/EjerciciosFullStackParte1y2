@@ -1,3 +1,4 @@
+import ShowContact from "../CodigoDeLosEjercicios/Parte2.6/Parte2.10";
 import { useState } from "react";
 
 const App = () => {
@@ -61,44 +62,6 @@ const App = () => {
       setShowAll(true);
     }
   };
-  const ShowAll = () => {
-    return (
-      <>
-        {persons.map((persona) => {
-          return (
-            <li key={persona.name}>
-              {persona.name} {persona.number}
-            </li>
-          );
-        })}
-      </>
-    );
-  };
-
-  const ShowSearchContact = () => {
-    const filtrado = persons.filter((elemento) =>
-      elemento.name.toLowerCase().includes(search.toLowerCase())
-    );
-    return (
-      <>
-        {filtrado.map((persona) => {
-          return (
-            <li key={persona.name}>
-              {persona.name} {persona.number}
-            </li>
-          );
-        })}
-      </>
-    );
-  };
-
-  const ShowContact = () => {
-    if (showAll) {
-      return <ShowAll />;
-    } else {
-      return <ShowSearchContact />;
-    }
-  };
 
   return (
     <div>
@@ -127,7 +90,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ol>
-        <ShowContact />
+        <ShowContact showAll={showAll} persons={persons} search={search} />
       </ol>
     </div>
   );
