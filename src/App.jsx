@@ -1,21 +1,95 @@
-import { useState, useEffect } from "react";
+import ShowContact from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.12/ShowContact";
+import { useState,useEffect } from "react";
 import axios from "axios";
 
 const App = () => {
-  const [notes, setNotes] = useState([]);
+  const [showAll, setShowAll] = useState(true);
+  const [search, setSearch] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [persons, setPersons] = useState([
+  ]);
 
-  const hook = () => {
-    console.log("efect");
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log("promise fulfilled");
-      setNotes(response.data);
-    });
+  const changeInSearch = (event) => {
+    setSearch(event.target.value);
+    let valor = "";
+    valor = event.target.value.toLowerCase();
+    verifySearch(valor);
+  };
+  const cambioNombre = (event) => {
+    setNewName(event.target.value);
+  };
+  const cambioNumero = (event) => {
+    setNewNumber(event.target.value);
   };
 
-  useEffect(hook, []);
+  const crearPersona = (event) => {
+    event.preventDefault();
+    const personObjet = {
+      name: newName,
+      number: newNumber,
+    };
+    verificarNombre(personObjet);
+  };
 
-  console.log("render", notes.length, "notes");
-  console.log(notes);
+  const verificarNombre = (nombre) => {
+    let verificacion = persons
+      .map((persona) => persona.name)
+      .includes(nombre.name);
+    console.log(
+      `El nombre a comparar fue ${nombre.name} y la verificacion esta en ${verificacion}`
+    );
+    if (verificacion) {
+      alert(`El nombre ${nombre.name} ya se encuentra agregado en la lista`);
+    } else {
+      agregarNombre(nombre);
+    }
+  };
+
+  const agregarNombre = (objeto) => {
+    setPersons(persons.concat(objeto));
+    setNewName("");
+    setNewNumber("");
+  };
+  const verifySearch = (valor) => {
+    if (valor !== "") {
+      setShowAll(false);
+    } else {
+      setShowAll(true);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <div>
+        <label htmlFor="search">Buscar </label>
+        <input type="text" value={search} onChange={changeInSearch} />
+      </div>
+      <form>
+        <h2>Add a new</h2>
+        <div>
+          <article>
+            <label htmlFor="fname">Nombre </label>
+            <input value={newName} onChange={cambioNombre} />
+          </article>
+          <article>
+            <label htmlFor="fnumber">Numero </label>
+            <input value={newNumber} onChange={cambioNumero} />
+          </article>
+        </div>
+        <div>
+          <button type="submit" onClick={crearPersona}>
+            Agregar
+          </button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      <ol>
+        <ShowContact showAll={showAll} persons={persons} search={search} />
+      </ol>
+    </div>
+  );
 };
 
 export default App;

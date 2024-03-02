@@ -19,3 +19,6 @@ const App = () => {
 };
 
 export default App;
+
+
+// Obtener datos desde el archivo db.json para aprender a utilizar json-server
