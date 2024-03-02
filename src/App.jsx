@@ -1,6 +1,6 @@
 import ShowContact from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.12/ShowContact";
-import { useState,useEffect } from "react";
-import axios from "axios";
+import { useState,useEffect, useReducer } from "react";
+import getPersonas from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.12/Server";
 
 const App = () => {
   const [showAll, setShowAll] = useState(true);
@@ -10,6 +10,8 @@ const App = () => {
   const [persons, setPersons] = useState([
   ]);
 
+
+  useEffect(getPersonas,[]);
   const changeInSearch = (event) => {
     setSearch(event.target.value);
     let valor = "";
@@ -33,7 +35,7 @@ const App = () => {
   };
 
   const verificarNombre = (nombre) => {
-    let verificacion = persons
+    let verificacion = persons  // persons
       .map((persona) => persona.name)
       .includes(nombre.name);
     console.log(
@@ -47,7 +49,7 @@ const App = () => {
   };
 
   const agregarNombre = (objeto) => {
-    setPersons(persons.concat(objeto));
+    setPersons(persons.concat(objeto)); // persons
     setNewName("");
     setNewNumber("");
   };
@@ -86,7 +88,8 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ol>
-        <ShowContact showAll={showAll} persons={persons} search={search} />
+        
+        <ShowContact showAll={showAll} persons={persons} search={search} /> // persons
       </ol>
     </div>
   );
