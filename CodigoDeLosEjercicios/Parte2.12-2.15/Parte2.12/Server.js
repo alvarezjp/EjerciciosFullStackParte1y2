@@ -1,9 +1,26 @@
 import axios from "axios";
+const baseUrl = "http://localhost:3001/persons";
 
-const getPersonas = () => {
-    axios.get("http://localhost:3001/persons").then(response=>{
-    console.log("Lectura del json.server") ;
-    console.log(response.data)})  
-   }
+const getAll = () => {
+  return axios.get(baseUrl);
+};
 
-export default getPersonas;
+const create = (newObjet) => {
+  return axios.post(baseUrl, newObjet);
+};
+
+const contactDelete = (id) => {
+  return axios.delete(`${baseUrl}/${id}`);
+};
+
+const getContact = (id) => {
+  return axios.get(`${baseUrl}/${id}`);
+};
+
+
+export default {
+  getAll,
+  create,
+  getContact,
+  contactDelete
+};

@@ -1,17 +1,21 @@
 import ShowContact from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.12/ShowContact";
-import { useState,useEffect, useReducer } from "react";
-import getPersonas from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.12/Server";
+import { useState, useEffect } from "react";
+import server from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.12/server";
 
 const App = () => {
   const [showAll, setShowAll] = useState(true);
   const [search, setSearch] = useState("");
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-  const [persons, setPersons] = useState([
-  ]);
+  const [persons, setPersons] = useState([]);
 
+  useEffect(() => {
+    server.getAll().then((response) => {
+      // console.log(response.data);
+      setPersons(response.data);
+    });
+  }, []);
 
-  useEffect(getPersonas,[]);
   const changeInSearch = (event) => {
     setSearch(event.target.value);
     let valor = "";
@@ -35,7 +39,7 @@ const App = () => {
   };
 
   const verificarNombre = (nombre) => {
-    let verificacion = persons  // persons
+    let verificacion = persons
       .map((persona) => persona.name)
       .includes(nombre.name);
     console.log(
@@ -49,9 +53,12 @@ const App = () => {
   };
 
   const agregarNombre = (objeto) => {
-    setPersons(persons.concat(objeto)); // persons
-    setNewName("");
-    setNewNumber("");
+    server.create(objeto).then((response) => {
+      console.log(response);
+      setPersons(persons.concat(response.data));
+      setNewName("");
+      setNewNumber("");
+    });
   };
   const verifySearch = (valor) => {
     if (valor !== "") {
@@ -60,7 +67,6 @@ const App = () => {
       setShowAll(true);
     }
   };
-
   return (
     <div>
       <h2>Phonebook</h2>
@@ -88,8 +94,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ol>
-        
-        <ShowContact showAll={showAll} persons={persons} search={search} /> // persons
+        <ShowContact showAll={showAll} persons={persons} search={search} setPersons={setPersons}/>
       </ol>
     </div>
   );
