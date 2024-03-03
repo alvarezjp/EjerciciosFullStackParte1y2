@@ -25,7 +25,7 @@ const ShowSearchContact = ({ persons, search, setPersons }) => {
       {filtrado.map((persona) => {
         return (
           <li key={persona.name}>
-            {persona.name} {persona.number}
+            {persona.name} {persona.number} {persona.id}
             <BotonDelete id={persona.id} setPersons={setPersons} />
           </li>
         );
@@ -41,7 +41,7 @@ const ShowAll = ({ persons, setPersons }) => {
       {persons.map((persona) => {
         return (
           <li key={persona.name}>
-            {persona.name} {persona.number}
+            {persona.name} {persona.number} {persona.id}
             <BotonDelete id={persona.id} setPersons={setPersons} />
           </li>
         );
@@ -63,25 +63,27 @@ const BotonDelete = ({ id, setPersons }) => {
 };
 
 const messageDelete = (id, setPersons) => {
-  server.getContact(id).then((response) => {
-    const pregunta = confirm(
-      `Seguro que desea eliminar a --> " ${response.data.name}"`
-    );
-    if (pregunta) {
-      deleteContact(id, setPersons);
-    }
-  }).catch(err => alert("No se logro encontrar el contacto para eliminar"));
-}
-  const deleteContact = (id, setPersons) => {
-    server
-      .contactDelete(id)
-      .then((response) => {
-        setPersons((prePersons) =>
-          prePersons.filter((contact) => contact.id !== id)
-        );
-      })
-      .catch((err) => alert("No se pudo eliminar el contacto"));
-  };
-
+  server
+    .getContact(id)
+    .then((response) => {
+      const pregunta = confirm(
+        `Seguro que desea eliminar a --> " ${response.data.name}"`
+      );
+      if (pregunta) {
+        deleteContact(id, setPersons);
+      }
+    })
+    .catch((err) => alert("No se logro encontrar el contacto para eliminar"));
+};
+const deleteContact = (id, setPersons) => {
+  server
+    .contactDelete(id)
+    .then((response) => {
+      setPersons((prePersons) =>
+        prePersons.filter((contact) => contact.id !== id)
+      );
+    })
+    .catch((err) => alert("No se pudo eliminar el contacto"));
+};
 
 export default ShowContact;
