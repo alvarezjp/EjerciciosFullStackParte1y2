@@ -1,6 +1,6 @@
-import ShowContact from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.12/ShowContact";
+import ShowContact from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.15/ShowContact";
 import { useState, useEffect } from "react";
-
+import server from "../CodigoDeLosEjercicios/Parte2.12-2.15/Parte2.15/server";
 
 const App = () => {
   const [showAll, setShowAll] = useState(true);
@@ -8,18 +8,14 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [persons, setPersons] = useState([]);
-  
+
   useEffect(() => {
-    server
-    .getAll().
-    then(response=>{
-      console.log(response.data);
+    server.getAll().then((response) => {
+      // console.log(response.data);
       setPersons(response.data);
-    })
-  },
-  [])
-  
-  console.log(persons);
+    });
+  }, []);
+
   const changeInSearch = (event) => {
     setSearch(event.target.value);
     let valor = "";
@@ -43,23 +39,42 @@ const App = () => {
   };
 
   const verificarNombre = (nombre) => {
-    let verificacion = persons
-      .map((persona) => persona.name)
-      .includes(nombre.name);
-    console.log(
-      `El nombre a comparar fue ${nombre.name} y la verificacion esta en ${verificacion}`
+    const verificacion = persons
+      .map((persona) => persona.name.toLowerCase())
+      .includes(nombre.name.toLowerCase());
+    const datos = persons.find(
+      (contacto) => contacto.name.toLowerCase() === nombre.name.toLowerCase()
     );
     if (verificacion) {
-      alert(`El nombre ${nombre.name} ya se encuentra agregado en la lista`);
+      updateData(nombre, datos);
     } else {
       agregarNombre(nombre);
     }
   };
 
+  const updateData = (nombre, datos) => {
+    const pregunta = window.confirm(
+      `El nombre ${nombre.name} ya se encuentra agregado en la lista. ¿Quire modificar los datos anteriores por los que agrego ahora?`
+    );
+    if (pregunta) {
+      console.log("console.log de los datos ->>>>", datos.id);
+      server.replaceContact(datos.id, nombre).then((response) => {
+        setPersons(prePerson =>
+          prePerson.map(contact =>
+            contact.name.toLowerCase() !== nombre.name.toLowerCase() ? contact : response.data
+          )
+        );
+      });
+    }
+  };
+
   const agregarNombre = (objeto) => {
-    setPersons(persons.concat(objeto));
-    setNewName("");
-    setNewNumber("");
+    server.create(objeto).then((response) => {
+      console.log(response);
+      setPersons(persons.concat(response.data));
+      setNewName("");
+      setNewNumber("");
+    });
   };
   const verifySearch = (valor) => {
     if (valor !== "") {
@@ -95,7 +110,12 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ol>
-        <ShowContact showAll={showAll} persons={persons} search={search} />
+        <ShowContact
+          showAll={showAll}
+          persons={persons}
+          search={search}
+          setPersons={setPersons}
+        />
       </ol>
     </div>
   );

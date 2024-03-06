@@ -1,7 +1,6 @@
-import ShowContact from "../CodigoDeLosEjercicios/Parte 2.16-2.17/ShowContact";
+import ShowContact from "./ShowContact";
 import { useState, useEffect } from "react";
-import server from "../CodigoDeLosEjercicios/Parte 2.16-2.17/server";
-import ErrorMessage from "../CodigoDeLosEjercicios/Parte 2.16-2.17/errorMesagge";
+import server from "./server";
 
 const App = () => {
   const [showAll, setShowAll] = useState(true);
@@ -9,7 +8,6 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [persons, setPersons] = useState([]);
-  const [message,setMessage]=useState(null)
 
   useEffect(() => {
     server.getAll().then((response) => {
@@ -87,7 +85,6 @@ const App = () => {
   };
   return (
     <div>
-      <ErrorMessage mensaje={message}/>
       <h2>Phonebook</h2>
       <div>
         <label htmlFor="search">Buscar </label>
