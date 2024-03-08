@@ -20,6 +20,7 @@ const ShowSearchContact = ({ persons, search, setPersons }) => {
   const filtrado = persons.filter((elemento) =>
     elemento.name.toLowerCase().includes(search.toLowerCase())
   );
+  console.log(persons)
   return (
     <>
       {filtrado.map((persona) => {

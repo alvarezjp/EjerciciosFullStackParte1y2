@@ -3,12 +3,26 @@ import server from "../CodigoDeLosEjercicios/Parte2.18-2.20/server";
 
 const App = () => {
   const [name, setName] = useState([]);
+  const [search, setSearch] = useState("algo");
 
   useEffect(() => {
     server.getAll().then((response) => setName(response.data));
   }, []);
 
-  name.map((nombre) => console.log(nombre));
+  const inputSearch = (event) => {
+    setSearch(event.target.value);
+  };
+
+const searchCountry = () => {
+  const data = search.toLocaleLowerCase()
+  // const resultado = name.filter((dato) => dato.name.common.include(data))
+ const rest = name.filter(dato => dato.name.common.toLocaleLowerCase().includes(data));
+ console.log(rest.map(dato => dato.name.common));
+}
+
+searchCountry();
+
+  // name.filter((nombre) => nombre.name.common.include(comparacion => comparacion === "Kuwait")); // ----------> para poder ver datos en consola
 
   const Paises = () => {
     return (
@@ -21,21 +35,23 @@ const App = () => {
     );
   };
 
-  const SearchCountry = () => {
-     return ( 
-      <form>
-          <label htmlFor="search">Buscar Pais </label>
-          <input type="text" placeholder="Ingresa un nombre de pais" />
-      </form>
-    )
-  }
-
   return (
     <div>
       <h1>Api de Paises</h1>
-      <SearchCountry/>
+      <SearchCountry search={search} inputSearch={inputSearch}  />
       <Paises />
     </div>
+  );
+};
+
+const SearchCountry = ({ search, inputSearch }) => {
+  return (
+    <form>
+      <article>
+        <label htmlFor="search">Buscar Paises </label>
+        <input value={search} onChange={inputSearch} />
+      </article>
+    </form>
   );
 };
 
