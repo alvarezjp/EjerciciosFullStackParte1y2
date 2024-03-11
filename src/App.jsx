@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Component } from "react";
 import server from "../CodigoDeLosEjercicios/Parte2.18-2.20/server";
 
 const App = () => {
   const [name, setName] = useState([]);
-  const [search, setSearch] = useState("algo");
+  const [search, setSearch] = useState("");
+  const [nameFilter, setNameFilter] = useState([]);
+  const [searchActivation, setSearchActivation] = useState(false);
 
   useEffect(() => {
     server.getAll().then((response) => setName(response.data));
@@ -13,46 +15,102 @@ const App = () => {
     setSearch(event.target.value);
   };
 
-const searchCountry = () => {
-  const data = search.toLocaleLowerCase()
-  // const resultado = name.filter((dato) => dato.name.common.include(data))
- const rest = name.filter(dato => dato.name.common.toLocaleLowerCase().includes(data));
- console.log(rest.map(dato => dato.name.common));
-}
+  const searchAction = (event) => {
+    inputSearch(event);
+    searchNames();
+  };
 
-searchCountry();
-
-  // name.filter((nombre) => nombre.name.common.include(comparacion => comparacion === "Kuwait")); // ----------> para poder ver datos en consola
-
-  const Paises = () => {
-    return (
-      <>
-        <h2>Nombre de paises</h2>
-        {name.map((nombre) => {
-          return <li key={nombre.name.common}>{nombre.name.common}</li>;
-        })}
-      </>
+  const searchNames = () => {
+    const data = search.toLocaleLowerCase();
+    // const resultado = name.filter((dato) => dato.name.common.include(data))
+    const rest = name.filter((dato) =>
+      dato.name.common.toLocaleLowerCase().includes(data)
     );
+    const nameCountry = rest.map((dato) => dato.name.common);
+    if (data !== "" && nameCountry.length <= 10) {
+      setNameFilter(nameCountry);
+      setSearchActivation(true);
+    } else {
+      setSearchActivation(false);
+    }
   };
 
   return (
     <div>
       <h1>Api de Paises</h1>
-      <SearchCountry search={search} inputSearch={inputSearch}  />
-      <Paises />
+      <SearchCountry search={search} searchAction={searchAction} />
+      <UserMessage search={search} searchActivation={searchActivation}/>
+      <CountryVisualization
+        name={name}
+        searchActivation={searchActivation}
+        nameFilter={nameFilter}
+      />
     </div>
   );
 };
 
-const SearchCountry = ({ search, inputSearch }) => {
+const CountryVisualization = ({ name, searchActivation, nameFilter }) => {
+  {
+    if (!searchActivation) {
+      return (
+        <>
+          <Paises name={name} />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <FilteredCountries nameFilter={nameFilter} />
+        </>
+      );
+    }
+  }
+};
+
+const Paises = ({ name }) => {
+  return (
+    <>
+      <h2>Nombre de paises</h2>
+      {name.map((nombre) => {
+        return <li key={nombre.name.common}>{nombre.name.common}</li>;
+      })}
+    </>
+  );
+};
+const SearchCountry = ({ search, searchAction }) => {
   return (
     <form>
       <article>
         <label htmlFor="search">Buscar Paises </label>
-        <input value={search} onChange={inputSearch} />
+        <input value={search} onChange={searchAction} />
       </article>
     </form>
   );
 };
 
+const FilteredCountries = ({ nameFilter }) => {
+  return (
+    <>
+      <h2>Nombre de paises</h2>
+      <ol>
+        {nameFilter.map((country,id) => {
+          return (
+            <>
+              <li key={country+id}>{country}</li>
+            </>
+          );
+        })}
+      </ol>
+    </>
+  );
+};
+const UserMessage = ({ search,searchActivation}) => {
+  if ((search.length >= 1)&&(!searchActivation )) {
+    return (
+      <>
+        <h2>Realiza una consulta mas especifica</h2>
+      </>
+    );
+  }
+};
 export default App;
