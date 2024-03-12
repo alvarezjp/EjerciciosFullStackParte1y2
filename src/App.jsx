@@ -11,35 +11,53 @@ const App = () => {
     server.getAll().then((response) => setName(response.data));
   }, []);
 
+  useEffect(() => {
+    const data = search.toLocaleLowerCase();
+    const rest = name.filter((dato) =>
+      dato.name.common.toLocaleLowerCase().includes(data)
+    );
+    const nameCountry = rest.map((dato) => dato.name.common);
+    
+    if (data !== "" && nameCountry.length <= 10) {
+    setNameFilter(nameCountry);
+    console.log(nameFilter)
+    setSearchActivation(true);
+  } else {
+    setSearchActivation(false);
+  }
+  }, [search,name]);
+
   const inputSearch = (event) => {
     setSearch(event.target.value);
   };
 
   const searchAction = (event) => {
     inputSearch(event);
-    searchNames();
+    // searchNames();
   };
 
-  const searchNames = () => {
-    const data = search.toLocaleLowerCase();
-    // const resultado = name.filter((dato) => dato.name.common.include(data))
-    const rest = name.filter((dato) =>
-      dato.name.common.toLocaleLowerCase().includes(data)
-    );
-    const nameCountry = rest.map((dato) => dato.name.common);
-    if (data !== "" && nameCountry.length <= 10) {
-      setNameFilter(nameCountry);
-      setSearchActivation(true);
-    } else {
-      setSearchActivation(false);
-    }
-  };
+  // const searchNames = () => {
+  //   const data = search.toLocaleLowerCase();
+  //   // const resultado = name.filter((dato) => dato.name.common.include(data))
+  //   const rest = name.filter((dato) =>
+  //     dato.name.common.toLocaleLowerCase().includes(data)
+  //   );
+  //   const nameCountry = rest.map((dato) => dato.name.common);
+  //   if (data !== "" && nameCountry.length <= 10) {
+  //     setNameFilter(nameCountry)
+  //     darValor();
+  //     setSearchActivation(true);
+  //   } else {
+  //     setSearchActivation(false);
+  //   }
+  //   console.log(nameFilter);
+  // };
 
   return (
     <div>
       <h1>Api de Paises</h1>
       <SearchCountry search={search} searchAction={searchAction} />
-      <UserMessage search={search} searchActivation={searchActivation}/>
+      <UserMessage search={search} searchActivation={searchActivation} />
       <CountryVisualization
         name={name}
         searchActivation={searchActivation}
@@ -93,10 +111,10 @@ const FilteredCountries = ({ nameFilter }) => {
     <>
       <h2>Nombre de paises</h2>
       <ol>
-        {nameFilter.map((country,id) => {
+        {nameFilter.map((country, id) => {
           return (
             <>
-              <li key={country+id}>{country}</li>
+              <li key={country + id}>{country}</li>
             </>
           );
         })}
@@ -104,8 +122,8 @@ const FilteredCountries = ({ nameFilter }) => {
     </>
   );
 };
-const UserMessage = ({ search,searchActivation}) => {
-  if ((search.length >= 1)&&(!searchActivation )) {
+const UserMessage = ({ search, searchActivation }) => {
+  if (search.length >= 1 && !searchActivation) {
     return (
       <>
         <h2>Realiza una consulta mas especifica</h2>
