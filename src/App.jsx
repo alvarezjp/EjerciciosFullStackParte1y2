@@ -17,15 +17,14 @@ const App = () => {
       dato.name.common.toLocaleLowerCase().includes(data)
     );
     const nameCountry = rest.map((dato) => dato.name.common);
-    
+
     if (data !== "" && nameCountry.length <= 10) {
-    setNameFilter(nameCountry);
-    console.log(nameFilter)
-    setSearchActivation(true);
-  } else {
-    setSearchActivation(false);
-  }
-  }, [search,name]);
+      setNameFilter(nameCountry);
+      setSearchActivation(true);
+    } else {
+      setSearchActivation(false);
+    }
+  }, [search, name]);
 
   const inputSearch = (event) => {
     setSearch(event.target.value);
@@ -33,31 +32,17 @@ const App = () => {
 
   const searchAction = (event) => {
     inputSearch(event);
-    // searchNames();
   };
-
-  // const searchNames = () => {
-  //   const data = search.toLocaleLowerCase();
-  //   // const resultado = name.filter((dato) => dato.name.common.include(data))
-  //   const rest = name.filter((dato) =>
-  //     dato.name.common.toLocaleLowerCase().includes(data)
-  //   );
-  //   const nameCountry = rest.map((dato) => dato.name.common);
-  //   if (data !== "" && nameCountry.length <= 10) {
-  //     setNameFilter(nameCountry)
-  //     darValor();
-  //     setSearchActivation(true);
-  //   } else {
-  //     setSearchActivation(false);
-  //   }
-  //   console.log(nameFilter);
-  // };
 
   return (
     <div>
       <h1>Api de Paises</h1>
       <SearchCountry search={search} searchAction={searchAction} />
-      <UserMessage search={search} searchActivation={searchActivation} />
+      <UserMessage
+        search={search}
+        searchActivation={searchActivation}
+        nameFilter={nameFilter}
+      />
       <CountryVisualization
         name={name}
         searchActivation={searchActivation}
@@ -75,10 +60,17 @@ const CountryVisualization = ({ name, searchActivation, nameFilter }) => {
           <Paises name={name} />
         </>
       );
-    } else {
+    }
+    if (searchActivation && nameFilter.length > 1) {
       return (
         <>
           <FilteredCountries nameFilter={nameFilter} />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <CountryDetail nameFilter={nameFilter} name={name} />
         </>
       );
     }
@@ -122,13 +114,27 @@ const FilteredCountries = ({ nameFilter }) => {
     </>
   );
 };
-const UserMessage = ({ search, searchActivation }) => {
-  if (search.length >= 1 && !searchActivation) {
+const UserMessage = ({ search, searchActivation, nameFilter }) => {
+  if (
+    (search.length >= 1 && !searchActivation) ||
+    (search.length >= 1 && nameFilter.length === 0)
+  ) {
     return (
       <>
         <h2>Realiza una consulta mas especifica</h2>
       </>
     );
   }
+};
+
+const CountryDetail = ({ nameFilter,name }) => {
+console.log(name.find  ( dato => dato.name.common === " chile"));
+
+  return (
+    <>
+      <h2>Nombre de paises</h2>
+      <h4>Esto es el contry detail</h4>
+    </>
+  );
 };
 export default App;
