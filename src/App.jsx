@@ -127,9 +127,17 @@ const UserMessage = ({ search, searchActivation, nameFilter }) => {
   }
 };
 
-const CountryDetail = ({ nameFilter,name }) => {
-console.log(name.find  ( dato => dato.name.common === " chile"));
-
+const CountryDetail = ({ nameFilter, name }) => {
+  // console.log(name.find  ( dato => dato.name.common === " chile"));
+  const infoCountry = (infoSought) => {
+    name.find((country) => {
+      const nameCountry = country.name.common;
+      console.log(typeof(nameCountry));
+      console.warn(typeof(infoSought))
+      return infoSought === nameCountry;
+    });
+  };
+infoCountry("chile").map(datos => console.log(datos))
   return (
     <>
       <h2>Nombre de paises</h2>
