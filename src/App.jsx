@@ -52,7 +52,12 @@ const App = () => {
   );
 };
 
-const CountryVisualization = ({ name, searchActivation, nameFilter }) => {
+const CountryVisualization = ({
+  name,
+  searchActivation,
+  nameFilter,
+  search,
+}) => {
   {
     if (!searchActivation) {
       return (
@@ -67,10 +72,11 @@ const CountryVisualization = ({ name, searchActivation, nameFilter }) => {
           <FilteredCountries nameFilter={nameFilter} />
         </>
       );
-    } else {
+    }
+    if (searchActivation && nameFilter.length === 1) {
       return (
         <>
-          <CountryDetail nameFilter={nameFilter} name={name} />
+          <CountryDetail nameFilter={nameFilter} name={name} search={search} />
         </>
       );
     }
@@ -127,21 +133,37 @@ const UserMessage = ({ search, searchActivation, nameFilter }) => {
   }
 };
 
-const CountryDetail = ({ nameFilter, name }) => {
+const CountryDetail = ({ nameFilter, name, search }) => {
   // console.log(name.find  ( dato => dato.name.common === " chile"));
-  const infoCountry = (infoSought) => {
-    name.find((country) => {
-      const nameCountry = country.name.common;
-      console.log(typeof(nameCountry));
-      console.warn(typeof(infoSought))
-      return infoSought === nameCountry;
-    });
-  };
-infoCountry("chile").map(datos => console.log(datos))
+  const languages = [];
+  const info = name.find(
+    (country) =>
+      country.name.common.toLowerCase() === nameFilter[0].toLowerCase()
+  );
+  for (const leg in info.languages) {
+    if (Object.hasOwnProperty.call(info.languages, leg)) {
+      const value = info.languages[leg];
+      languages.push(value);
+    }
+  }
+
   return (
     <>
-      <h2>Nombre de paises</h2>
-      <h4>Esto es el contry detail</h4>
+      <h2>{info.name.common}</h2>
+      <p>
+        Su capital es: <b>{info.capital}</b>
+      </p>
+      <p>
+        Su ares es: <b>{info.area}</b>
+      </p>
+      <p>Los idiomas que hablan son:</p>
+      <ol>
+        {languages.map((names) => {
+          return <li key={names}>{names}</li>;
+        })}
+      </ol>
+      <h3>Bandera</h3>
+      <img src={info.flags.png} alt="" />
     </>
   );
 };
