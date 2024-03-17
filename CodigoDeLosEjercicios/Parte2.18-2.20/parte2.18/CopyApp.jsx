@@ -1,12 +1,11 @@
 import { useState, useEffect, Component } from "react";
-import server from "../CodigoDeLosEjercicios/Parte2.18-2.20/parte2.19/server";
+import server from "../CodigoDeLosEjercicios/Parte2.18-2.20/server";
 
 const App = () => {
   const [name, setName] = useState([]);
   const [search, setSearch] = useState("");
   const [nameFilter, setNameFilter] = useState([]);
   const [searchActivation, setSearchActivation] = useState(false);
-  const [btnDetails, setBtnDetails] = useState([""]);
 
   useEffect(() => {
     server.getAll().then((response) => setName(response.data));
@@ -35,15 +34,6 @@ const App = () => {
     inputSearch(event);
   };
 
-  const obtainInfo = (searchedName) => {
-    const country = searchedName.toLowerCase();
-    if (country === btnDetails[0]) {
-      setBtnDetails([""]);
-    } else {
-      setBtnDetails([searchedName.toLowerCase()]);
-    }
-  };
-
   return (
     <div>
       <h1>Api de Paises</h1>
@@ -57,8 +47,6 @@ const App = () => {
         name={name}
         searchActivation={searchActivation}
         nameFilter={nameFilter}
-        obtainInfo={obtainInfo}
-        btnDetails={btnDetails}
       />
     </div>
   );
@@ -69,8 +57,6 @@ const CountryVisualization = ({
   searchActivation,
   nameFilter,
   search,
-  obtainInfo,
-  btnDetails,
 }) => {
   {
     if (!searchActivation) {
@@ -83,12 +69,7 @@ const CountryVisualization = ({
     if (searchActivation && nameFilter.length > 1) {
       return (
         <>
-          <FilteredCountries
-            nameFilter={nameFilter}
-            obtainInfo={obtainInfo}
-            name={name}
-            btnDetails={btnDetails}
-          />
+          <FilteredCountries nameFilter={nameFilter} />
         </>
       );
     }
@@ -123,7 +104,7 @@ const SearchCountry = ({ search, searchAction }) => {
   );
 };
 
-const FilteredCountries = ({ nameFilter, obtainInfo, name, btnDetails}) => {
+const FilteredCountries = ({ nameFilter }) => {
   return (
     <>
       <h2>Nombre de paises</h2>
@@ -131,15 +112,7 @@ const FilteredCountries = ({ nameFilter, obtainInfo, name, btnDetails}) => {
         {nameFilter.map((country, id) => {
           return (
             <>
-              <li key={country}>
-                {country}
-                <BtnInfoCountry
-                  country={country}
-                  obtainInfo={obtainInfo}
-                  name={name}
-                />
-              </li>
-              <DetailView country={country} btnDetails={btnDetails} name={name}/>
+              <li key={country + id}>{country}</li>
             </>
           );
         })}
@@ -160,10 +133,11 @@ const UserMessage = ({ search, searchActivation, nameFilter }) => {
   }
 };
 
-const CountryDetail = ({ nameFilter, name }) => {
+const CountryDetail = ({ nameFilter, name, search }) => {
+  // console.log(name.find  ( dato => dato.name.common === " chile"));
   const languages = [];
   const info = name.find(
-    country =>
+    (country) =>
       country.name.common.toLowerCase() === nameFilter[0].toLowerCase()
   );
   for (const leg in info.languages) {
@@ -172,7 +146,7 @@ const CountryDetail = ({ nameFilter, name }) => {
       languages.push(value);
     }
   }
-  
+
   return (
     <>
       <h2>{info.name.common}</h2>
@@ -192,19 +166,5 @@ const CountryDetail = ({ nameFilter, name }) => {
       <img src={info.flags.png} alt="" />
     </>
   );
-};
-
-const BtnInfoCountry = ({ country, obtainInfo, name }) => {
-  return <button onClick={() => obtainInfo(country)}>Ver detalles</button>;
-};
-
-const DetailView = ({ country, btnDetails,name }) => {
-  {
-    if (country.toLowerCase() === btnDetails[0]) {
-      return( <>
-      <CountryDetail nameFilter={btnDetails} name={name}/>
-      </>)
-    }
-  }
 };
 export default App;
